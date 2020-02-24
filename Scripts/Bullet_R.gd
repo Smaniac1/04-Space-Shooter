@@ -32,3 +32,7 @@ func _integrate_forces(state):
 	rotation_degrees = (rot * (360 / rot_seg))
 	var vel_rot = deg2rad((rot * (360 / rot_seg)) - 90)
 	state.set_linear_velocity(Vector2(speed*cos(vel_rot),speed*sin(vel_rot)))
+	if Input.is_action_just_pressed("Hold"):
+		speed = 0
+	if Input.is_action_just_released("Hold"):
+		speed = 500

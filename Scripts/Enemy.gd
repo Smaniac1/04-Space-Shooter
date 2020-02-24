@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-export var limit_y = 350
+export var limit_y = 0
 export var score = 10
 export var speed = 2.0
 export var move_probability = 0.05

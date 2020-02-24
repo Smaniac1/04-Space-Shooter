@@ -14,7 +14,7 @@ onready var Bullet_R = load("res://Scenes/Bullet_R.tscn")
 
 onready var rot_seg = get_node("/root/Game").rotate_segments
 var rot = 0
-
+var per_acceleration = 0
 signal health_changed
 signal score_changed
 
@@ -31,7 +31,7 @@ func change_health(h):
 func change_score(s):
 	score += s
 	emit_signal("score_changed")	
-	acceleration += .005
+	per_acceleration += .005
 
 func die():
 	queue_free()
@@ -47,6 +47,12 @@ func _physics_process(delta):
 		b.rot = rot
 		get_node("/root/Game/Bullets").fire(b)
 
+	if Input.is_action_pressed("Spin_Left"):
+		rot = ((rot + rot_seg) - 1) % rot_seg
+		rotation_degrees = rot * (360 / rot_seg)
+	if Input.is_action_pressed("Spin_Right"):
+		rot = (rot + 1) % rot_seg
+		rotation_degrees = rot * (360 / rot_seg)
 	if Input.is_action_pressed("Left"):
 		velocity.x -= acceleration
 	if Input.is_action_pressed("Right"):
@@ -61,6 +67,12 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("Rotate_Right"):
 		rot = (rot + 1) % rot_seg
 		rotation_degrees = rot * (360 / rot_seg)
+	if Input.is_action_pressed("Speed_up"):
+		acceleration += .01
+	if Input.is_action_pressed("Speed_down"):
+		acceleration -= .01
+	if acceleration < per_acceleration:
+		acceleration = per_acceleration
 
 	if position.x < margin:
 		velocity.x = 0
