@@ -5,6 +5,9 @@ export var damage = 10
 onready var Explosion = load("res://Scenes/Explosion.tscn")
 onready var Player = get_node("/root/Game/Player")
 onready var Enemy = get_node("/root/Game/Enemies")
+onready var rot_seg = get_node("/root/Game").rotate_segments
+var rot = 0
+
 func _ready():
 	contact_monitor = true
 	set_max_contacts_reported(4)
@@ -24,15 +27,7 @@ func _physics_process(delta):
 		queue_free()
 
 func _integrate_forces(state):
-	if Enemy.rotation == 0 :
-		state.set_linear_velocity(Vector2(0,speed))
-		state.set_angular_velocity(0)
-	elif Enemy.rotation == 90 or Enemy.rotation == -270:
-		state.set_linear_velocity(Vector2(-speed,0))
-		state.set_angular_velocity(0)
-	elif Enemy.rotation == 180 or Enemy.rotation == -180:
-		state.set_linear_velocity(Vector2(0,-speed))
-		state.set_angular_velocity(0)
-	elif Enemy.rotation == 270 or Enemy.rotation == -90:
-		state.set_linear_velocity(Vector2(speed,0))
-		state.set_angular_velocity(0)
+	state.set_angular_velocity(0)
+	rotation_degrees = (rot * (360 / rot_seg))
+	var vel_rot = deg2rad((rot * (360 / rot_seg)) - 90)
+	state.set_linear_velocity(Vector2(speed*cos(vel_rot),speed*sin(vel_rot)))

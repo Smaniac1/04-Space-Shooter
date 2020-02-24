@@ -12,6 +12,9 @@ onready var VP = get_viewport_rect().size
 
 onready var Bullet_R = load("res://Scenes/Bullet_R.tscn")
 
+onready var rot_seg = get_node("/root/Game").rotate_segments
+var rot = 0
+
 signal health_changed
 signal score_changed
 
@@ -38,7 +41,10 @@ func _physics_process(delta):
 	if Input.is_action_pressed("Shoot"):
 		var b = Bullet_R.instance()
 		b.position = position
-		b.position.y -= 25
+		var vel_rot = deg2rad((rot * (360 / rot_seg)) - 90)
+		b.position.x += cos(vel_rot) * 25
+		b.position.y += sin(vel_rot) * 25
+		b.rot = rot
 		get_node("/root/Game/Bullets").fire(b)
 
 	if Input.is_action_pressed("Left"):
@@ -50,9 +56,11 @@ func _physics_process(delta):
 	if Input.is_action_pressed("Down"):
 		velocity.y += acceleration
 	if Input.is_action_just_pressed("Rotate_Left"):
-		rotation_degrees -= 90
+		rot = ((rot + rot_seg) - 1) % rot_seg
+		rotation_degrees = rot * (360 / rot_seg)
 	if Input.is_action_just_pressed("Rotate_Right"):
-		rotation_degrees += 90
+		rot = (rot + 1) % rot_seg
+		rotation_degrees = rot * (360 / rot_seg)
 
 	if position.x < margin:
 		velocity.x = 0

@@ -1,6 +1,10 @@
 extends RigidBody2D
 
 export var speed = 500
+
+onready var rot_seg = get_node("/root/Game").rotate_segments
+var rot = 0
+
 onready var Explosion = load("res://Scenes/Explosion.tscn")
 onready var Player = get_node("/root/Game/Player")
 
@@ -24,19 +28,7 @@ func _physics_process(delta):
 		queue_free()
 
 func _integrate_forces(state):
-	if Player.rotation_degrees == 0 :
-		rotation_degrees = 0
-		state.set_linear_velocity(Vector2(0,-speed))
-		state.set_angular_velocity(0)
-	elif Player.rotation_degrees == 90 or Player.rotation_degrees == -270:
-		rotation_degrees = 90
-		state.set_linear_velocity(Vector2(speed,0))
-		state.set_angular_velocity(0)
-	elif Player.rotation_degrees == 180 or Player.rotation_degrees == -180:
-		rotation_degrees = 180
-		state.set_linear_velocity(Vector2(0,speed))
-		state.set_angular_velocity(0)
-	elif Player.rotation_degrees == 270 or Player.rotation_degrees == -90:
-		rotation_degrees = 270
-		state.set_linear_velocity(Vector2(-speed,0))
-		state.set_angular_velocity(0)
+	state.set_angular_velocity(0)
+	rotation_degrees = (rot * (360 / rot_seg))
+	var vel_rot = deg2rad((rot * (360 / rot_seg)) - 90)
+	state.set_linear_velocity(Vector2(speed*cos(vel_rot),speed*sin(vel_rot)))
